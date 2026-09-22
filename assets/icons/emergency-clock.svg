@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="clock-title">
+	<title id="clock-title">24/7 emergency response</title>
+	<path fill="none" stroke="#0B3B66" stroke-linecap="round" stroke-width="6" d="M26 24a31 31 0 0 1 42 0"/>
+	<path fill="none" stroke="#F5B400" stroke-linecap="round" stroke-width="6" d="M72 30a31 31 0 0 1-2 38"/>
+	<path fill="none" stroke="#0B3B66" stroke-linecap="round" stroke-width="6" d="M66 73a31 31 0 0 1-42-1"/>
+	<path fill="none" stroke="#F5B400" stroke-linecap="round" stroke-width="6" d="M22 66a31 31 0 0 1 2-38"/>
+	<path fill="#0B3B66" d="m23 14 11 10-14 2 3-12Zm50 10 10-10 2 14-12-4Zm0 48 12 4-10 10-2-14Zm-50 0-2 14-11-10 13-4Z"/>
+	<circle cx="48" cy="48" r="22" fill="#EAF2F8"/>
+	<text x="48" y="54" fill="#062A4A" font-family="Arial, sans-serif" font-size="15" font-weight="800" text-anchor="middle">24/7</text>
+</svg>

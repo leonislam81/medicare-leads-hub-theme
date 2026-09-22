@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="location-title">
+	<title id="location-title">Local locksmith service</title>
+	<path fill="none" stroke="#8FAEC8" stroke-linecap="round" stroke-width="3" d="M18 35 11 39m67-4 7 4M20 22l-4-6m60 6 4-6"/>
+	<path fill="#0B3B66" d="M48 8c-16 0-28 12.4-28 27.7C20 54.2 48 84 48 84s28-29.8 28-48.3C76 20.4 64 8 48 8Z"/>
+	<path fill="#174F7D" d="M48 15c-11.8 0-21 9.2-21 20.8C27 49.3 48 70 48 70s21-20.7 21-34.2C69 24.2 59.8 15 48 15Z"/>
+	<circle cx="48" cy="35" r="9" fill="#fff"/>
+	<ellipse cx="48" cy="82" rx="28" ry="7" fill="none" stroke="#F5B400" stroke-width="4"/>
+	<path fill="none" stroke="#F5B400" stroke-linecap="round" stroke-width="3" d="M12 84c8-4 16-6 24-6m24 0c8 0 16 2 24 6" opacity=".7"/>
+</svg>

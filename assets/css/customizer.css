@@ -1,0 +1,147 @@
+.medicare-faq-repeater__items {
+	margin: 10px 0 12px;
+}
+
+.medicare-faq-repeater__item {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	padding: 12px;
+}
+
+.medicare-faq-repeater__item-header {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.medicare-faq-repeater__field {
+	display: block;
+	margin-top: 10px;
+}
+
+.medicare-faq-repeater__field-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.medicare-faq-repeater__empty {
+	color: #646970;
+	font-style: italic;
+	margin: 10px 0;
+}
+
+.medicare-pricing-repeater__items {
+	margin: 10px 0 12px;
+}
+
+.medicare-pricing-repeater__item {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	padding: 12px;
+}
+
+.medicare-pricing-repeater__item-header {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.medicare-pricing-repeater__field {
+	display: block;
+	margin-top: 10px;
+}
+
+.medicare-pricing-repeater__field-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.medicare-pricing-repeater__empty {
+	color: #646970;
+	font-style: italic;
+	margin: 10px 0;
+}
+
+.medicare-testimonials-repeater__items {
+	margin: 10px 0 12px;
+}
+
+.medicare-testimonials-repeater__item {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	padding: 12px;
+}
+
+.medicare-testimonials-repeater__item-header {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.medicare-testimonials-repeater__field {
+	display: block;
+	margin-top: 10px;
+}
+
+.medicare-testimonials-repeater__field-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.medicare-testimonials-repeater__checkbox {
+	display: block;
+	font-size: 12px;
+	margin-top: 12px;
+}
+
+.medicare-testimonials-repeater__empty {
+	color: #646970;
+	font-style: italic;
+	margin: 10px 0;
+}
+
+.medicare-theme-navigation {
+	margin: 4px -12px -12px;
+}
+
+.medicare-theme-navigation__link {
+	align-items: center;
+	background: #fff;
+	border: 0;
+	border-top: 1px solid #dcdcde;
+	box-sizing: border-box;
+	color: #1d2327;
+	display: flex;
+	font-size: 13px;
+	justify-content: space-between;
+	padding: 14px 12px;
+	text-align: left;
+	width: 100%;
+}
+
+.medicare-theme-navigation__link:hover,
+.medicare-theme-navigation__link:focus {
+	background: #f6f7f7;
+	box-shadow: none;
+	color: #135e96;
+}
+
+.medicare-theme-navigation__link > span:last-child {
+	font-size: 22px;
+	line-height: 1;
+}
