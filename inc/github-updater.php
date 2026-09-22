@@ -110,11 +110,44 @@ function medicare_leads_hub_github_theme_update( $transient ) {
 add_filter( 'pre_set_site_transient_update_themes', 'medicare_leads_hub_github_theme_update' );
 
 /**
+ * Use WordPress' native Update URI integration for WordPress 6.1+.
+ *
+ * @param array|false $update          Existing update response.
+ * @param array       $theme_data      Installed theme headers.
+ * @param string      $theme_stylesheet Installed stylesheet directory.
+ * @param string[]    $locales         Installed translation locales.
+ * @return array|false
+ */
+function medicare_leads_hub_github_native_theme_update( $update, $theme_data, $theme_stylesheet, $locales ) {
+	if ( 'medicare-leads-hub' !== $theme_stylesheet ) {
+		return $update;
+	}
+
+	$release = medicare_leads_hub_github_latest_release();
+	if ( empty( $release['version'] ) || empty( $release['package'] ) ) {
+		return $update;
+	}
+
+	return array(
+		'version'      => $release['version'],
+		'new_version'  => $release['version'],
+		'theme'        => $theme_stylesheet,
+		'url'          => 'https://github.com/' . MEDICARE_LEADS_HUB_GITHUB_REPOSITORY,
+		'package'      => $release['package'],
+		'requires_php' => isset( $theme_data['RequiresPHP'] ) ? $theme_data['RequiresPHP'] : '',
+	);
+}
+add_filter( 'update_themes_github.com', 'medicare_leads_hub_github_native_theme_update', 10, 4 );
+
+/**
  * Let the WordPress Updates screen force a fresh GitHub release check.
  */
 function medicare_leads_hub_github_force_update_check() {
 	if ( isset( $_GET['force-check'] ) && current_user_can( 'update_themes' ) ) {
 		delete_site_transient( 'medicare_leads_hub_github_latest_release' );
+		delete_site_transient( 'update_themes' );
 	}
 }
 add_action( 'admin_init', 'medicare_leads_hub_github_force_update_check' );
+add_action( 'load-update-core.php', 'medicare_leads_hub_github_force_update_check', 1 );
+add_action( 'load-themes.php', 'medicare_leads_hub_github_force_update_check', 1 );
