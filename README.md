@@ -18,7 +18,7 @@ Theme updates do not replace pages, media, forms, SEO settings, menus, or saved 
 ```bash
 git add .
 git commit -m "Describe the change"
-git tag v1.5.1
+git tag v1.5.2
 git push origin main --follow-tags
 ```
 

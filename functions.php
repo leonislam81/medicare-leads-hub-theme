@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once get_template_directory() . '/inc/github-updater.php';
+
 function medicare_leads_hub_setup() {
 	load_theme_textdomain( 'medicare-leads-hub', get_template_directory() . '/languages' );
 
