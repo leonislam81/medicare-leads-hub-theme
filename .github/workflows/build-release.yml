@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,7 +23,9 @@ jobs:
         run: |
           VERSION="$(sed -n 's/^ *Version: *//p' style.css | head -n 1 | tr -d '\r')"
           test -n "$VERSION"
-          test "$VERSION" = "${GITHUB_REF_NAME#v}"
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            test "$VERSION" = "${GITHUB_REF_NAME#v}"
+          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Package theme-only ZIP
@@ -37,8 +40,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            "medicare-leads-hub-${{ steps.theme.outputs.version }}.zip" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "Medicare Leads Hub ${{ steps.theme.outputs.version }}" \
-            --generate-notes
+          TAG="v${{ steps.theme.outputs.version }}"
+          PACKAGE="medicare-leads-hub-${{ steps.theme.outputs.version }}.zip"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$PACKAGE" --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$TAG" "$PACKAGE" --repo "$GITHUB_REPOSITORY" --title "Medicare Leads Hub ${{ steps.theme.outputs.version }}" --generate-notes
+          fi
