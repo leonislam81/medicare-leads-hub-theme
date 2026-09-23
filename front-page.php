@@ -28,10 +28,14 @@ $hero_supporting = get_theme_mod( 'medicare_hero_supporting', 'Clear recommendat
 $primary_text    = get_theme_mod( 'medicare_hero_primary_text', 'Get A Free Estimate' );
 $primary_url     = medicare_leads_hub_resolve_contact_cta_url( get_theme_mod( 'medicare_hero_primary_url', '#contact' ) );
 $show_phone      = get_theme_mod( 'medicare_hero_show_phone', true );
+$show_hero_form  = (bool) get_theme_mod( 'medicare_hero_form_show', true );
+$hero_form_heading = trim( (string) get_theme_mod( 'medicare_hero_form_heading', 'Request a Free Quote' ) );
+$hero_form_intro = trim( (string) get_theme_mod( 'medicare_hero_form_intro', 'Tell us what you need and our local team will be in touch.' ) );
+$hero_form_shortcode = trim( (string) get_theme_mod( 'medicare_hero_form_shortcode', '' ) );
+$hero_form_ready = $show_hero_form && $hero_form_shortcode && shortcode_exists( 'contact-form-7' );
+$render_hero_form = $show_hero_form && ( $hero_form_ready || current_user_can( 'edit_theme_options' ) );
 $phone           = medicare_leads_hub_profile_value( 'medicare_header_phone', 'phone', '' );
 $phone_href      = preg_replace( '/[^0-9+]/', '', $phone );
-$show_why        = get_theme_mod( 'medicare_why_show', true );
-$why_heading     = get_theme_mod( 'medicare_why_heading', 'Why Choose Us' );
 $theme_version   = wp_get_theme()->get( 'Version' );
 $show_process    = get_theme_mod( 'medicare_process_show', true );
 $process_heading = get_theme_mod( 'medicare_process_heading', 'Get Your Service Done in 3 Easy Steps' );
@@ -77,26 +81,23 @@ $booking_faq_background       = get_theme_mod( 'medicare_booking_faq_background'
 $booking_faq_eyebrow          = get_theme_mod( 'medicare_booking_faq_eyebrow', 'FAQ' );
 $booking_faq_heading          = get_theme_mod( 'medicare_booking_faq_heading', 'Questions before you book?' );
 $booking_faq_intro            = get_theme_mod( 'medicare_booking_faq_intro', 'Here are answers to common service questions.' );
-	$show_about        = get_theme_mod( 'medicare_about_show', true );
-	$about_heading     = get_theme_mod( 'medicare_about_heading', 'Experience you can count on' );
-	$about_content_default = implode(
+	$show_trust_section = (bool) get_theme_mod( 'medicare_trust_section_show', true );
+	$trust_heading_prefix = get_theme_mod( 'medicare_trust_heading_prefix', 'Why Choose' );
+	$trust_heading_accent = get_theme_mod( 'medicare_trust_heading_accent', 'Centennial Locksmiths?' );
+	$trust_content_default = implode(
 		"\n\n",
 		array_filter(
 			array(
-				get_theme_mod( 'medicare_about_paragraph_1', 'Tell visitors who you help, what you do, and why your team is a dependable choice.' ),
-				get_theme_mod( 'medicare_about_paragraph_2', 'Use this space to explain your service area, process, and the practical results customers can expect.' ),
-				get_theme_mod( 'medicare_about_paragraph_3', 'Add your experience, values, guarantees, and the details that make your business different.' ),
+				get_theme_mod( 'medicare_trust_paragraph_1', 'Locksmith Centennial Co. serves local homeowners, businesses, and drivers with dependable locksmith solutions. From urgent lockouts to lock installation, our team brings care and precision to every visit.' ),
+				get_theme_mod( 'medicare_trust_paragraph_2', 'Our experienced technicians explain the situation and your options clearly, so you can make a confident decision and know what to expect before work begins.' ),
+				get_theme_mod( 'medicare_trust_paragraph_3', 'We provide straightforward pricing and communicate costs upfront. There are no hidden fees or surprise charges after the work is complete.' ),
+				get_theme_mod( 'medicare_trust_paragraph_4', 'Our reputation is built on consistent, honest service. We aim to be the locksmith our Centennial neighbors call first and recommend to others.' ),
 			)
 		)
 	);
-	$about_content = get_theme_mod( 'medicare_about_content', $about_content_default );
-$why_icons       = array(
-	'shield-check'    => get_template_directory_uri() . '/assets/icons/shield-check.svg?ver=' . rawurlencode( $theme_version ),
-	'emergency-clock' => get_template_directory_uri() . '/assets/icons/emergency-clock.svg?ver=' . rawurlencode( $theme_version ),
-	'location-pin'    => get_template_directory_uri() . '/assets/icons/location-pin.svg?ver=' . rawurlencode( $theme_version ),
-);
-$why_cards        = array( 1, 2, 3 );
-?>
+	$trust_paragraphs = preg_split( '/\R\s*\R/', trim( get_theme_mod( 'medicare_trust_content', $trust_content_default ) ) );
+	$trust_paragraphs = array_filter( array_map( 'trim', $trust_paragraphs ), 'strlen' );
+	?>
 <main id="primary-content" class="site-main">
 	<section class="hero-section" aria-labelledby="hero-title">
 		<?php if ( $hero_image_html ) : ?>
@@ -106,76 +107,63 @@ $why_cards        = array( 1, 2, 3 );
 		<?php endif; ?>
 		<div class="hero-section__overlay" aria-hidden="true"></div>
 		<div class="hero-section__inner">
-			<div class="hero-section__card">
-				<h1 id="hero-title"><?php echo esc_html( $hero_title ); ?></h1>
-				<?php if ( $hero_intro ) : ?>
-					<p class="hero-section__intro"><?php echo nl2br( esc_html( $hero_intro ) ); ?></p>
-				<?php endif; ?>
-				<?php if ( $hero_supporting ) : ?>
-					<p class="hero-section__supporting"><?php echo nl2br( esc_html( $hero_supporting ) ); ?></p>
-				<?php endif; ?>
-				<div class="hero-section__actions">
-					<a class="hero-button hero-button--primary" href="<?php echo esc_url( $primary_url ); ?>"><?php echo esc_html( $primary_text ); ?></a>
-					<?php if ( $show_phone && $phone ) : ?>
-						<a class="hero-button hero-button--phone" href="tel:<?php echo esc_attr( $phone_href ); ?>">
-							<svg class="hero-button__icon" viewBox="0 0 58 42" aria-hidden="true" focusable="false">
-								<g class="pro-call-button__handset">
-									<path d="M11 7.5 7.8 9.4c-.9.5-1.3 1.5-1 2.5 1.9 8.2 8.3 14.6 16.5 16.5 1 .2 2-.1 2.5-1l1.9-3.2c.5-.9.3-2-.5-2.6l-3.6-2.8c-.8-.6-1.9-.6-2.6.1l-1.9 1.8c-1.8-1-3.4-2.6-4.4-4.4l1.8-1.9c.7-.7.7-1.8.1-2.6l-2.8-3.6c-.7-.8-1.8-1-2.8-.5Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
-								</g>
-								<path class="pro-call-button__wave pro-call-button__wave--inner" d="M30 10c7 1.4 10.8 5.5 10.8 11.6" />
-								<path class="pro-call-button__wave pro-call-button__wave--outer" d="M34 4.5c10 2.2 15 8.4 15 17" />
-							</svg>
-							<span><?php echo esc_html( $phone ); ?></span>
-						</a>
+			<div class="hero-section__layout<?php echo $render_hero_form ? ' hero-section__layout--with-form' : ''; ?>">
+				<div class="hero-section__card">
+					<h1 id="hero-title"><?php echo esc_html( $hero_title ); ?></h1>
+					<?php if ( $hero_intro ) : ?>
+						<p class="hero-section__intro"><?php echo nl2br( esc_html( $hero_intro ) ); ?></p>
 					<?php endif; ?>
+					<?php if ( $hero_supporting ) : ?>
+						<p class="hero-section__supporting"><?php echo nl2br( esc_html( $hero_supporting ) ); ?></p>
+					<?php endif; ?>
+					<div class="hero-section__actions">
+						<a class="hero-button hero-button--primary" href="<?php echo esc_url( $primary_url ); ?>"><?php echo esc_html( $primary_text ); ?></a>
+						<?php if ( $show_phone && $phone ) : ?>
+							<a class="hero-button hero-button--phone" href="tel:<?php echo esc_attr( $phone_href ); ?>">
+								<svg class="hero-button__icon" viewBox="0 0 58 42" aria-hidden="true" focusable="false">
+									<g class="pro-call-button__handset">
+										<path d="M11 7.5 7.8 9.4c-.9.5-1.3 1.5-1 2.5 1.9 8.2 8.3 14.6 16.5 16.5 1 .2 2-.1 2.5-1l1.9-3.2c.5-.9.3-2-.5-2.6l-3.6-2.8c-.8-.6-1.9-.6-2.6.1l-1.9 1.8c-1.8-1-3.4-2.6-4.4-4.4l1.8-1.9c.7-.7.7-1.8.1-2.6l-2.8-3.6c-.7-.8-1.8-1-2.8-.5Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+									</g>
+									<path class="pro-call-button__wave pro-call-button__wave--inner" d="M30 10c7 1.4 10.8 5.5 10.8 11.6" />
+									<path class="pro-call-button__wave pro-call-button__wave--outer" d="M34 4.5c10 2.2 15 8.4 15 17" />
+								</svg>
+								<span><?php echo esc_html( $phone ); ?></span>
+							</a>
+						<?php endif; ?>
+					</div>
 				</div>
+
+				<?php if ( $render_hero_form ) : ?>
+					<aside class="hero-form-card" aria-label="<?php echo esc_attr( $hero_form_heading ? $hero_form_heading : __( 'Contact our team', 'medicare-leads-hub' ) ); ?>">
+						<?php if ( $hero_form_heading ) : ?>
+							<h2 class="hero-form-card__heading"><?php echo esc_html( $hero_form_heading ); ?></h2>
+						<?php endif; ?>
+						<?php if ( $hero_form_intro ) : ?>
+							<p class="hero-form-card__intro"><?php echo esc_html( $hero_form_intro ); ?></p>
+						<?php endif; ?>
+						<?php if ( $hero_form_ready ) : ?>
+							<div class="hero-form-card__form contact-page__cf7">
+								<?php echo do_shortcode( $hero_form_shortcode ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Contact Form 7 returns its own form markup. ?>
+							</div>
+						<?php elseif ( current_user_can( 'edit_theme_options' ) ) : ?>
+							<p class="hero-form-card__notice"><?php esc_html_e( 'A hero-specific Contact Form 7 shortcode is required. Add it in Customize → Homepage → Homepage Hero.', 'medicare-leads-hub' ); ?></p>
+						<?php endif; ?>
+					</aside>
+				<?php endif; ?>
 			</div>
 		</div>
 	</section>
 
-	<?php if ( $show_why ) : ?>
-		<section id="why-choose-us" class="why-section" aria-labelledby="why-title">
-			<div class="why-section__inner">
-				<div class="why-section__heading">
-					<div class="why-section__eyebrow">
-						<span class="why-section__eyebrow-line" aria-hidden="true"></span>
-						<h2 id="why-title"><?php echo esc_html( $why_heading ); ?></h2>
-						<span class="why-section__eyebrow-line" aria-hidden="true"></span>
-					</div>
-				</div>
-
-				<div class="why-section__grid">
-					<?php foreach ( $why_cards as $card_index ) : ?>
-						<?php
-						$icon_key = sanitize_key( get_theme_mod( 'medicare_why_card_' . $card_index . '_icon', array( 1 => 'shield-check', 2 => 'emergency-clock', 3 => 'location-pin' )[ $card_index ] ) );
-						$icon_url = isset( $why_icons[ $icon_key ] ) ? $why_icons[ $icon_key ] : $why_icons['shield-check'];
-						$card_title = get_theme_mod( 'medicare_why_card_' . $card_index . '_title', array( 1 => 'Licensed & Insured', 2 => '24/7 Emergency Response', 3 => 'Local & Trusted' )[ $card_index ] );
-						$card_body  = get_theme_mod( 'medicare_why_card_' . $card_index . '_body', array( 1 => 'Show customers the training, care, or standards your team brings to every project.', 2 => 'Explain how customers can reach you and what they can expect after contacting your team.', 3 => 'Add the service area and trust signal that matter most to your customers.' )[ $card_index ] );
-						?>
-						<article class="why-card">
-							<div class="why-card__icon-wrap">
-								<img class="why-card__icon" src="<?php echo esc_url( $icon_url ); ?>" alt="" loading="lazy" width="88" height="88" />
-							</div>
-							<h3><?php echo esc_html( $card_title ); ?></h3>
-							<span class="why-card__rule" aria-hidden="true"></span>
-							<p><?php echo nl2br( esc_html( $card_body ) ); ?></p>
-						</article>
+	<?php if ( $show_trust_section ) : ?>
+		<section id="why-choose-us" class="trust-section" aria-labelledby="trust-section-title">
+			<div class="trust-section__inner">
+				<h2 class="trust-section__title" id="trust-section-title">
+					<?php if ( $trust_heading_prefix ) : ?><span><?php echo esc_html( $trust_heading_prefix ); ?></span><?php endif; ?><?php if ( $trust_heading_accent ) : ?> <span class="trust-section__title-accent"><?php echo esc_html( $trust_heading_accent ); ?></span><?php endif; ?>
+				</h2>
+				<div class="trust-section__panel">
+					<?php foreach ( $trust_paragraphs as $paragraph ) : ?>
+						<p><?php echo nl2br( esc_html( $paragraph ) ); ?></p>
 					<?php endforeach; ?>
-				</div>
-			</div>
-		</section>
-	<?php endif; ?>
-
-	<?php if ( $show_about ) : ?>
-		<section id="about-experience" class="about-section" aria-labelledby="about-title">
-			<div class="about-section__inner">
-				<div class="about-section__visual">
-					<h2 id="about-title"><?php echo esc_html( $about_heading ); ?></h2>
-					<span class="about-section__rule" aria-hidden="true"></span>
-				</div>
-
-				<div class="about-section__copy">
-					<?php echo wp_kses_post( wpautop( $about_content ) ); ?>
 				</div>
 			</div>
 		</section>

@@ -976,6 +976,29 @@ function medicare_leads_hub_customizer( $wp_customize ) {
 	$wp_customize->add_setting( 'medicare_hero_show_phone', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean', 'transport' => 'refresh' ) );
 	$wp_customize->add_control( 'medicare_hero_show_phone', array( 'label' => __( 'Show phone CTA', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'checkbox' ) );
 
+	$wp_customize->add_setting( 'medicare_hero_form_show', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean', 'transport' => 'refresh' ) );
+	$wp_customize->add_control( 'medicare_hero_form_show', array( 'label' => __( 'Show quote form in hero', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'checkbox' ) );
+
+	$wp_customize->add_setting( 'medicare_hero_form_heading', array( 'default' => 'Request a Free Quote', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh' ) );
+	$wp_customize->add_control( 'medicare_hero_form_heading', array( 'label' => __( 'Hero form heading', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'text' ) );
+
+	$wp_customize->add_setting( 'medicare_hero_form_intro', array( 'default' => 'Tell us what you need and our local team will be in touch.', 'sanitize_callback' => 'sanitize_textarea_field', 'transport' => 'refresh' ) );
+	$wp_customize->add_control( 'medicare_hero_form_intro', array( 'label' => __( 'Hero form description', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'textarea' ) );
+
+	$wp_customize->add_setting( 'medicare_hero_form_shortcode', array( 'default' => '', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh' ) );
+	$wp_customize->add_control(
+		'medicare_hero_form_shortcode',
+		array(
+			'label'       => __( 'Contact Form 7 shortcode', 'medicare-leads-hub' ),
+			'description' => __( 'Required. Paste the separate Contact Form 7 shortcode for this hero form; it will not reuse the Contact Us page form. Manage its fields and recipient email under Contact → Contact Forms.', 'medicare-leads-hub' ),
+			'section'     => 'medicare_hero_settings',
+			'type'        => 'text',
+		)
+	);
+
+	$wp_customize->add_setting( 'medicare_hero_form_width', array( 'default' => 470, 'sanitize_callback' => function ( $value ) { return medicare_leads_hub_sanitize_range( $value, 340, 560, 470 ); }, 'transport' => 'refresh' ) );
+	$wp_customize->add_control( 'medicare_hero_form_width', array( 'label' => __( 'Hero form card width (px)', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'range', 'input_attrs' => array( 'min' => 340, 'max' => 560, 'step' => 10 ) ) );
+
 	$wp_customize->add_setting( 'medicare_hero_overlay', array( 'default' => 48, 'sanitize_callback' => function ( $value ) { return medicare_leads_hub_sanitize_range( $value, 20, 75, 48 ); }, 'transport' => 'refresh' ) );
 	$wp_customize->add_control( 'medicare_hero_overlay', array( 'label' => __( 'Image overlay strength (%)', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'range', 'input_attrs' => array( 'min' => 20, 'max' => 75, 'step' => 1 ) ) );
 
@@ -983,54 +1006,55 @@ function medicare_leads_hub_customizer( $wp_customize ) {
 	$wp_customize->add_control( 'medicare_hero_card_width', array( 'label' => __( 'Content card width (px)', 'medicare-leads-hub' ), 'section' => 'medicare_hero_settings', 'type' => 'range', 'input_attrs' => array( 'min' => 420, 'max' => 760, 'step' => 10 ) ) );
 
 	$wp_customize->add_section(
-		'medicare_why_settings',
+		'medicare_trust_section_settings',
 		array(
 			'title'    => __( 'Why Choose Us', 'medicare-leads-hub' ),
+		'description' => __( 'Edit the heading and section copy in one field. Add a blank line between paragraphs. You can also adjust the section background and panel border.', 'medicare-leads-hub' ),
 			'panel'    => 'medicare_theme_options',
 			'priority' => 40,
 		)
 	);
 
-	$why_text_settings = array(
-		'medicare_why_heading' => array( __( 'Why Choose Us label', 'medicare-leads-hub' ), 'Why Choose Us', 'sanitize_text_field' ),
+	$wp_customize->add_setting( 'medicare_trust_section_show', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean', 'transport' => 'refresh' ) );
+	$wp_customize->add_control( 'medicare_trust_section_show', array( 'label' => __( 'Show Why Choose Us section', 'medicare-leads-hub' ), 'section' => 'medicare_trust_section_settings', 'type' => 'checkbox' ) );
+
+	$trust_text_settings = array(
+		'medicare_trust_heading_prefix' => array( __( 'Heading (navy)', 'medicare-leads-hub' ), 'Why Choose', 'sanitize_text_field', 'text' ),
+		'medicare_trust_heading_accent' => array( __( 'Heading highlight (gold)', 'medicare-leads-hub' ), 'Centennial Locksmiths?', 'sanitize_text_field', 'text' ),
 	);
 
-	foreach ( $why_text_settings as $id => $data ) {
+	foreach ( $trust_text_settings as $id => $data ) {
 		$wp_customize->add_setting( $id, array( 'default' => $data[1], 'sanitize_callback' => $data[2], 'transport' => 'refresh' ) );
-		$wp_customize->add_control( $id, array( 'label' => $data[0], 'section' => 'medicare_why_settings', 'type' => 'sanitize_textarea_field' === $data[2] ? 'textarea' : 'text' ) );
+		$wp_customize->add_control( $id, array( 'label' => $data[0], 'section' => 'medicare_trust_section_settings', 'type' => $data[3] ) );
 	}
 
-	$wp_customize->add_setting( 'medicare_why_show', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean', 'transport' => 'refresh' ) );
-	$wp_customize->add_control( 'medicare_why_show', array( 'label' => __( 'Show Why Choose Us section', 'medicare-leads-hub' ), 'section' => 'medicare_why_settings', 'type' => 'checkbox' ) );
-
-	$wp_customize->add_setting( 'medicare_why_background', array( 'default' => '#ffffff', 'sanitize_callback' => 'medicare_leads_hub_sanitize_hex', 'transport' => 'refresh' ) );
-	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'medicare_why_background', array( 'label' => __( 'Section background', 'medicare-leads-hub' ), 'section' => 'medicare_why_settings' ) ) );
-
-	$why_cards = array(
-		1 => array( 'shield-check', 'Licensed & Insured', 'Our locksmiths are trained, insured, and committed to professional service.' ),
-		2 => array( 'emergency-clock', '24/7 Emergency Response', 'Lockouts and urgent access problems can happen anytime. We’re ready to help.' ),
-		3 => array( 'location-pin', 'Local & Trusted', 'Add the service area and trust signal that matter most to your customers.' ),
+	$trust_content_default = implode(
+		"\n\n",
+		array_filter(
+			array(
+				get_theme_mod( 'medicare_trust_paragraph_1', 'Locksmith Centennial Co. serves local homeowners, businesses, and drivers with dependable locksmith solutions. From urgent lockouts to lock installation, our team brings care and precision to every visit.' ),
+				get_theme_mod( 'medicare_trust_paragraph_2', 'Our experienced technicians explain the situation and your options clearly, so you can make a confident decision and know what to expect before work begins.' ),
+				get_theme_mod( 'medicare_trust_paragraph_3', 'We provide straightforward pricing and communicate costs upfront. There are no hidden fees or surprise charges after the work is complete.' ),
+				get_theme_mod( 'medicare_trust_paragraph_4', 'Our reputation is built on consistent, honest service. We aim to be the locksmith our Centennial neighbors call first and recommend to others.' ),
+			)
+		)
+	);
+	$wp_customize->add_setting( 'medicare_trust_content', array( 'default' => $trust_content_default, 'sanitize_callback' => 'sanitize_textarea_field', 'transport' => 'refresh' ) );
+	$wp_customize->add_control(
+		'medicare_trust_content',
+		array(
+			'label'       => __( 'Section content', 'medicare-leads-hub' ),
+			'description' => __( 'Write all the section copy here. Add a blank line wherever a new paragraph should start.', 'medicare-leads-hub' ),
+			'section'     => 'medicare_trust_section_settings',
+			'type'        => 'textarea',
+		)
 	);
 
-	$icon_choices = array(
-		'shield-check'    => __( 'Shield / check', 'medicare-leads-hub' ),
-		'emergency-clock' => __( '24/7 emergency clock', 'medicare-leads-hub' ),
-		'location-pin'    => __( 'Location pin', 'medicare-leads-hub' ),
-	);
+	$wp_customize->add_setting( 'medicare_trust_section_background', array( 'default' => '#ffffff', 'sanitize_callback' => 'medicare_leads_hub_sanitize_hex', 'transport' => 'refresh' ) );
+	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'medicare_trust_section_background', array( 'label' => __( 'Section background', 'medicare-leads-hub' ), 'section' => 'medicare_trust_section_settings' ) ) );
 
-	foreach ( $why_cards as $index => $card ) {
-		$icon_id = 'medicare_why_card_' . $index . '_icon';
-		$wp_customize->add_setting( $icon_id, array( 'default' => $card[0], 'sanitize_callback' => 'medicare_leads_hub_sanitize_icon', 'transport' => 'refresh' ) );
-		$wp_customize->add_control( $icon_id, array( 'label' => sprintf( __( 'Card %d icon', 'medicare-leads-hub' ), $index ), 'section' => 'medicare_why_settings', 'type' => 'select', 'choices' => $icon_choices ) );
-
-		$title_id = 'medicare_why_card_' . $index . '_title';
-		$wp_customize->add_setting( $title_id, array( 'default' => $card[1], 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh' ) );
-		$wp_customize->add_control( $title_id, array( 'label' => sprintf( __( 'Card %d heading', 'medicare-leads-hub' ), $index ), 'section' => 'medicare_why_settings', 'type' => 'text' ) );
-
-		$body_id = 'medicare_why_card_' . $index . '_body';
-		$wp_customize->add_setting( $body_id, array( 'default' => $card[2], 'sanitize_callback' => 'sanitize_textarea_field', 'transport' => 'refresh' ) );
-		$wp_customize->add_control( $body_id, array( 'label' => sprintf( __( 'Card %d description', 'medicare-leads-hub' ), $index ), 'section' => 'medicare_why_settings', 'type' => 'textarea' ) );
-	}
+	$wp_customize->add_setting( 'medicare_trust_panel_border', array( 'default' => '#0B3B66', 'sanitize_callback' => 'medicare_leads_hub_sanitize_hex', 'transport' => 'refresh' ) );
+	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'medicare_trust_panel_border', array( 'label' => __( 'Text panel border color', 'medicare-leads-hub' ), 'section' => 'medicare_trust_section_settings' ) ) );
 
 	$wp_customize->add_section(
 		'medicare_process_settings',
@@ -1472,44 +1496,6 @@ function medicare_leads_hub_customizer( $wp_customize ) {
 	);
 
 	$wp_customize->add_section(
-		'medicare_about_settings',
-		array(
-			'title'    => __( 'Homepage — About / Experience', 'medicare-leads-hub' ),
-			'description' => __( 'This is the About / Experience block on the homepage. The standalone About Us page is managed separately.', 'medicare-leads-hub' ),
-			'panel'    => 'medicare_theme_options',
-			'priority' => 50,
-		)
-	);
-
-	$wp_customize->add_setting( 'medicare_about_show', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean', 'transport' => 'refresh' ) );
-	$wp_customize->add_control( 'medicare_about_show', array( 'label' => __( 'Show About / Experience section', 'medicare-leads-hub' ), 'section' => 'medicare_about_settings', 'type' => 'checkbox' ) );
-
-	$wp_customize->add_setting( 'medicare_about_heading', array( 'default' => 'Local Locksmith Experience You Can Count On', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh' ) );
-	$wp_customize->add_control( 'medicare_about_heading', array( 'label' => __( 'Section heading', 'medicare-leads-hub' ), 'section' => 'medicare_about_settings', 'type' => 'text' ) );
-
-	$about_content_default = implode(
-		"\n\n",
-		array_filter(
-			array(
-				get_theme_mod( 'medicare_about_paragraph_1', 'Tell visitors who you help, what you do, and why your team is a dependable choice.' ),
-				get_theme_mod( 'medicare_about_paragraph_2', "Whether you are locked out, moving into a new home, upgrading your office, or planning a better access system, our team is ready. We handle emergency entry, rekeying, lock installation, smart locks, commercial access control, and safe services with practical solutions for every property." ),
-				get_theme_mod( 'medicare_about_paragraph_3', 'Add your experience, values, guarantees, and the details that make your business different.' ),
-			)
-		)
-	);
-
-	$wp_customize->add_setting( 'medicare_about_content', array( 'default' => $about_content_default, 'sanitize_callback' => 'wp_kses_post', 'transport' => 'refresh' ) );
-	$wp_customize->add_control(
-		'medicare_about_content',
-		array(
-			'label'       => __( 'About / Experience content', 'medicare-leads-hub' ),
-			'description' => __( 'Use one field for all content. Add blank lines for separate paragraphs. Basic HTML is supported, including heading tags (h2, h3), strong, em, links, lists, and paragraphs. Scripts and unsafe markup are removed.', 'medicare-leads-hub' ),
-			'section'     => 'medicare_about_settings',
-			'type'        => 'textarea',
-		)
-	);
-
-	$wp_customize->add_section(
 		'medicare_about_page_settings',
 		array(
 			'title'    => __( 'Page Content & Values', 'medicare-leads-hub' ),
@@ -1616,8 +1602,7 @@ function medicare_leads_hub_customizer( $wp_customize ) {
 	 */
 	$homepage_section_priorities = array(
 		'medicare_hero_settings'                    => 10,
-		'medicare_why_settings'                     => 20,
-		'medicare_about_settings'                   => 30,
+		'medicare_trust_section_settings'            => 20,
 		'medicare_process_settings'                 => 40,
 		'medicare_services_settings'                => 50,
 		'medicare_commercial_services_settings'     => 60,
@@ -1872,6 +1857,10 @@ function medicare_leads_hub_migrate_locksmith_content() {
 		'medicare_hero_intro'                     => 'Tell visitors what your business does and how you help.',
 		'medicare_hero_supporting'                => 'Clear recommendations, professional workmanship, and dependable support from first contact to final check.',
 		'medicare_hero_primary_url'               => '#contact',
+		'medicare_hero_form_show'                  => true,
+		'medicare_hero_form_heading'               => 'Request a Free Quote',
+		'medicare_hero_form_intro'                 => 'Tell us what you need and our local team will be in touch.',
+		'medicare_hero_form_shortcode'             => '',
 		'medicare_process_heading'                => 'Get Your Service Done in 3 Easy Steps',
 		'medicare_process_image_id'               => 0,
 		'medicare_process_step_1_title'           => 'Tell Us What You Need',
@@ -1880,12 +1869,6 @@ function medicare_leads_hub_migrate_locksmith_content() {
 		'medicare_process_step_2_body'            => 'Explain the scope, options, and expected cost before work begins.',
 		'medicare_process_step_3_title'           => 'Schedule Service',
 		'medicare_process_step_3_body'            => 'Choose a convenient time and complete the work with confidence.',
-		'medicare_why_card_1_title'               => 'Professional Service',
-		'medicare_why_card_1_body'                => 'Show customers the training, care, or standards your team brings to every project.',
-		'medicare_why_card_2_title'               => 'Responsive Support',
-		'medicare_why_card_2_body'                => 'Explain how customers can reach you and what they can expect after contacting your team.',
-		'medicare_why_card_3_title'               => 'Local & Trusted',
-		'medicare_why_card_3_body'                => 'Add the service area and trust signal that matter most to your customers.',
 		'medicare_services_heading'               => 'Services designed around your needs.',
 		'medicare_service_card_1_title'           => 'Primary Service',
 		'medicare_service_card_1_body'            => 'Describe your main service and the result customers can expect.',
@@ -1937,10 +1920,6 @@ function medicare_leads_hub_migrate_locksmith_content() {
 			array( 'question' => 'What areas do you serve?', 'answer' => 'Add your service area and any travel or scheduling details here.' ),
 			array( 'question' => 'How quickly can I schedule?', 'answer' => 'Explain your usual availability and how customers can request a time.' ),
 		),
-		'medicare_about_heading'                   => 'Experience you can count on',
-		'medicare_about_paragraph_1'               => 'Tell visitors who you help, what you do, and why your team is a dependable choice.',
-		'medicare_about_paragraph_2'               => 'Use this space to explain your service area, process, and the practical results customers can expect.',
-		'medicare_about_paragraph_3'               => 'Add your experience, values, guarantees, and the details that make your business different.',
 		'medicare_about_page_hero_image_id'        => 0,
 		'medicare_about_page_hero_title'           => 'About our business',
 		'medicare_about_page_hero_intro'           => 'Share your story, values, and the reason customers choose your team.',
@@ -2555,7 +2534,7 @@ function medicare_leads_hub_setup_wordpress_content() {
 			'items' => array(
 				__( 'Home', 'medicare-leads-hub' )     => home_url( '/' ),
 				__( 'Services', 'medicare-leads-hub' ) => home_url( '/#services-grid' ),
-				__( 'About', 'medicare-leads-hub' )    => home_url( '/#about-experience' ),
+				__( 'About', 'medicare-leads-hub' )    => home_url( '/about-us/' ),
 				__( 'Contact', 'medicare-leads-hub' )  => home_url( '/#contact' ),
 			),
 		),
@@ -2564,7 +2543,7 @@ function medicare_leads_hub_setup_wordpress_content() {
 			'items' => array(
 				__( 'Home', 'medicare-leads-hub' )     => home_url( '/' ),
 				__( 'Services', 'medicare-leads-hub' ) => home_url( '/#services-grid' ),
-				__( 'About', 'medicare-leads-hub' )    => home_url( '/#about-experience' ),
+				__( 'About', 'medicare-leads-hub' )    => home_url( '/about-us/' ),
 				__( 'Contact', 'medicare-leads-hub' )  => home_url( '/#contact' ),
 			),
 		),
@@ -2928,12 +2907,14 @@ function medicare_leads_hub_custom_css() {
 	$logo_width    = medicare_leads_hub_sanitize_range( get_theme_mod( 'medicare_logo_width', 190 ), 90, 300, 190 );
 	$hero_overlay  = medicare_leads_hub_sanitize_range( get_theme_mod( 'medicare_hero_overlay', 48 ), 20, 75, 48 );
 	$hero_card_width = medicare_leads_hub_sanitize_range( get_theme_mod( 'medicare_hero_card_width', 660 ), 420, 760, 660 );
-	$why_background = get_theme_mod( 'medicare_why_background', '#ffffff' );
+	$hero_form_width = medicare_leads_hub_sanitize_range( get_theme_mod( 'medicare_hero_form_width', 470 ), 340, 560, 470 );
+	$trust_background = get_theme_mod( 'medicare_trust_section_background', '#ffffff' );
+	$trust_panel_border = get_theme_mod( 'medicare_trust_panel_border', '#0B3B66' );
 	$services_background = get_theme_mod( 'medicare_services_background', '#F3F7FA' );
 	$footer_cta_background = get_theme_mod( 'medicare_footer_cta_background', '#062A4A' );
 	$footer_surface        = get_theme_mod( 'medicare_footer_surface', '#ffffff' );
 
-	return ':root{--mlh-primary:' . esc_attr( $primary ) . ';--mlh-primary-dark:' . esc_attr( $primary_dark ) . ';--mlh-gold:' . esc_attr( $gold ) . ';--mlh-gold-dark:' . esc_attr( $gold_dark ) . ';--mlh-accent:' . esc_attr( $accent ) . ';--mlh-text:' . esc_attr( $text ) . ';--mlh-heading:' . esc_attr( $heading ) . ';--mlh-header-bg:' . esc_attr( $header_bg ) . ';--mlh-header-text:' . esc_attr( $header_text ) . ';--mlh-body-font:' . $body_font . ';--mlh-heading-font:' . $heading_font . ';--mlh-body-size:' . absint( $body_size ) . 'px;--mlh-heading-size:' . absint( $heading_size ) . 'px;--mlh-radius:' . absint( $radius ) . 'px;--mlh-content-width:' . absint( $content_width ) . 'px;--mlh-logo-width:' . absint( $logo_width ) . 'px;--mlh-hero-overlay:' . ( absint( $hero_overlay ) / 100 ) . ';--mlh-hero-card-width:' . absint( $hero_card_width ) . 'px;--mlh-why-background:' . esc_attr( $why_background ) . ';--mlh-services-background:' . esc_attr( $services_background ) . ';--mlh-footer-cta-background:' . esc_attr( $footer_cta_background ) . ';--mlh-footer-surface:' . esc_attr( $footer_surface ) . ';}';
+	return ':root{--mlh-primary:' . esc_attr( $primary ) . ';--mlh-primary-dark:' . esc_attr( $primary_dark ) . ';--mlh-gold:' . esc_attr( $gold ) . ';--mlh-gold-dark:' . esc_attr( $gold_dark ) . ';--mlh-accent:' . esc_attr( $accent ) . ';--mlh-text:' . esc_attr( $text ) . ';--mlh-heading:' . esc_attr( $heading ) . ';--mlh-header-bg:' . esc_attr( $header_bg ) . ';--mlh-header-text:' . esc_attr( $header_text ) . ';--mlh-body-font:' . $body_font . ';--mlh-heading-font:' . $heading_font . ';--mlh-body-size:' . absint( $body_size ) . 'px;--mlh-heading-size:' . absint( $heading_size ) . 'px;--mlh-radius:' . absint( $radius ) . 'px;--mlh-content-width:' . absint( $content_width ) . 'px;--mlh-logo-width:' . absint( $logo_width ) . 'px;--mlh-hero-overlay:' . ( absint( $hero_overlay ) / 100 ) . ';--mlh-hero-card-width:' . absint( $hero_card_width ) . 'px;--mlh-hero-form-width:' . absint( $hero_form_width ) . 'px;--mlh-trust-background:' . esc_attr( $trust_background ) . ';--mlh-trust-panel-border:' . esc_attr( $trust_panel_border ) . ';--mlh-services-background:' . esc_attr( $services_background ) . ';--mlh-footer-cta-background:' . esc_attr( $footer_cta_background ) . ';--mlh-footer-surface:' . esc_attr( $footer_surface ) . ';}';
 }
 
 function medicare_leads_hub_google_fonts_url() {
@@ -3040,7 +3021,7 @@ function medicare_leads_hub_fallback_menu() {
 	$items = array(
 		__( 'Home', 'medicare-leads-hub' )     => home_url( '/' ),
 		__( 'Services', 'medicare-leads-hub' ) => home_url( '/#services-grid' ),
-		__( 'About', 'medicare-leads-hub' )    => home_url( '/#about-experience' ),
+		__( 'About', 'medicare-leads-hub' )    => home_url( '/about-us/' ),
 		__( 'Contact', 'medicare-leads-hub' )  => home_url( '/#contact' ),
 	);
 
@@ -3055,7 +3036,7 @@ function medicare_leads_hub_footer_fallback_menu() {
 	$items = array(
 		__( 'Home', 'medicare-leads-hub' )     => home_url( '/' ),
 		__( 'Services', 'medicare-leads-hub' ) => home_url( '/#services-grid' ),
-		__( 'About', 'medicare-leads-hub' )    => home_url( '/#about-experience' ),
+		__( 'About', 'medicare-leads-hub' )    => home_url( '/about-us/' ),
 		__( 'Contact', 'medicare-leads-hub' )  => home_url( '/#contact' ),
 	);
 	$menu  = '<ul id="footer-menu" class="site-footer__menu">';
